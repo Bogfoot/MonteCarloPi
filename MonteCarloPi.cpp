@@ -29,7 +29,6 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 {
 	TApplication app("ROOT Application", &argc, argv);
 	TCanvas canvas("c1");
-	//TH1F h("h", "example histogram", MaxIterations, 2.0, 4.0);
 
 	char repeat = 'y';
 	while (repeat == 'y')
