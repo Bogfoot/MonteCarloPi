@@ -3,6 +3,8 @@
 
 #include <array>
 #include <string>
+#include <chrono>
+
 
 constexpr int MaxIterations = 11;
 using PiArray = std::array<double, MaxIterations>;
@@ -18,3 +20,24 @@ char UiPromptChar(const std::string& prompt);
 void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
 void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
 void Potencija(int n);
+
+
+struct Stopwatch
+{
+   void Start()
+   {
+      start = std::chrono::high_resolution_clock::now();
+   }
+
+   double StopAndElapsedMilliseconds()
+   {
+      using namespace std::chrono;
+
+      auto elapsed = high_resolution_clock::now() - start;
+      auto us = duration_cast<microseconds>(elapsed).count();
+      return us / 1000.0;
+   }
+
+private:
+   std::chrono::steady_clock::time_point start;
+};

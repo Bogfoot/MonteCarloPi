@@ -1,7 +1,6 @@
 ﻿#include <assert.h>
 #include <iostream>
 #include <random>
-#include <chrono>
 #include <math.h>
 #include <time.h>
 #include <iomanip>
@@ -32,22 +31,21 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	TApplication app("ROOT Application", &argc, argv);
 	TCanvas canvas("c1");
 
-	char repeat = 'y';
+	Stopwatch sw;
+   char repeat = 'y';
 	while (repeat == 'y')
 	{
 		cout << endl;
 		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
 	
 		// Mjeri vrijeme racunanja.
-		auto start = chrono::high_resolution_clock::now();
+		sw.Start();
 
 		auto BrPi = CalculateMonteCarloPi(n);
 		auto srVrij = CalculateAverages(BrPi, n);
 		auto stDev = CalculateStdDevs(BrPi, srVrij, n);
 
-		auto elapsed = chrono::high_resolution_clock::now() - start;
-		auto us = chrono::duration_cast<chrono::microseconds>(elapsed).count();
-		cout << "Vrijeme: " << us / 1000.0 << " ms" << endl;
+		cout << "Vrijeme: " << sw.StopAndElapsedMilliseconds() << " ms" << endl;
 		
 		ConsolePrintResults(BrPi, srVrij, stDev, n);
 		Potencija(n);
@@ -64,17 +62,16 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 }
 
 
-void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, int pot)
+void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
 {
-	auto c48 = new TCanvas("c48", "c48", 200, 10, 600, 400);
+	TH1F* h = new TH1F("h", "example histogram", n, 2.0, 4.0);
+	for (int i = 0; i < n; i++)
+	{
 
-	auto tg = new TGraphErrors(3, pot, avg, 0, stDev);
-	c48->Divide(2, 1);
-	c48->cd(1);
-	gPad->DrawFrame(0, 0, 4, 8); 
-	tg->Draw("PC");
+		h->Fill(avg[i]);
+	}
+	h->Draw();
 }
-
 
 
 PiMatrix CalculateMonteCarloPi(int n)
