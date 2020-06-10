@@ -72,14 +72,15 @@ void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stD
 }
 
 
+
 PiMatrix CalculateMonteCarloPi(int n)
 {
 	assert((n >= 1) && (n <= MaxIterations));
 
 	PiMatrix BrPi{};
 
-	for (int k = 0; k < n; k++) {
-		for (int j = 0; j < n; j++) {
+	for (int k = 0; k <= n; k++) {
+		for (int j = 0; j <= n; j++) {
 			int BrTuKrug = 0;
 			for (int i = 0; i < pow(10, j); i++)
 			{
@@ -100,13 +101,13 @@ PiArray CalculateAverages(const PiMatrix& pis, int n)
 {
 	PiArray srVrij{};
 
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j <= n; j++)
 		{
 			srVrij[i] += pis[j][i];
 		}
-		srVrij[i] = srVrij[i] / ((double)n);
+		srVrij[i] = srVrij[i] / ((double)n+1);
 	}
 	return srVrij;
 }
@@ -118,13 +119,13 @@ PiArray CalculateStdDevs(const PiMatrix& pis, const PiArray& avg, int n)
 	*/
 
 	PiArray stDev{};
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j <= n; j++)
 		{
 			stDev[i] += pow(pis[j][i] - avg[i], 2);
 		}
-		stDev[i] = sqrt(stDev[i] / ((double)n));
+		stDev[i] = sqrt(stDev[i] / ((double)n+1));
 	}
 	return stDev;
 }
@@ -138,6 +139,11 @@ double GetRandomNumber()
 	static std::mt19937 rng{ rd() };
 	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
 	
+	
+	//static normal_distribution<double> distribution(0, (double)maxRandInt-1);
+	//static chi_squared_distribution<double> distribution(1);
+	//static gamma_distribution<long double> distribution(0, 1);
+	//static student_t_distribution<double> distribution(1.0);
 	// Racunanje slucajnog broja kod svakog poziva funkcije GetRandomNumber();
 	return distribution(rng) / maxRandInt;
 }
@@ -186,19 +192,19 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	}
 
 	cout << endl << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
 		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << avg[i] << endl;
 	}
 
 	cout << endl << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
 		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << stDev[i] << endl;
 	}
 
 	cout << endl;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
 		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << avg[i] << " +- " << stDev[i] << endl;
 	}
@@ -206,9 +212,9 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 
 void PrintPiMatrix(const PiMatrix& pis, int n)
 {
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j <= n; j++)
 		{
 			cout << "(" << i + 1 << ", " << j + 1 << ")-ti pi je: " << pis[i][j] << " ";
 		}
