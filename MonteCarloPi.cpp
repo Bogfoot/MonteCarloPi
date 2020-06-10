@@ -1,19 +1,19 @@
-﻿// Pi2Test.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <random>
 #include <math.h>
 #include <time.h>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
 /*
+
 	Treba napraviti MCSim za generiranje broja \pi.
 	U kvadratu površine 1 (1x1) generirati će se parovi brojeva (x,y)&[0-1].
 	Upisati kružnicu radiusa 1, površine 1 * 1 * \pi= \pi. Prebrojati koliko se točaka nalazi u kružnici.
 	BrTuKrug/BrTuKvad=\pi/4
+
 */
 int main()
 {
@@ -25,6 +25,8 @@ int main()
 	int n;
 	char odg, odg1;
 	double srVrij[11] = { 0.0 }, stDev[11] = { 0.0 };
+
+
 
 skok:
 	cout << "Unesi potenciju: " << endl;
@@ -42,20 +44,20 @@ skok:
 					BrTuKrug++;
 
 			}
-			double pi = ((double)BrTuKrug / pow(10, j) * 4);
-			BrPi[k][j] = pi;
+
+			BrPi[k][j] = ((double)BrTuKrug / pow(10, j) * 4);
 		}
 	}
 	cout << "Zelite li ispisati dobivene pi-jeve?(y/n)" << endl;
 	cin >> odg;
 	if (odg == 'y')
 	{
-		cout << "Skup \pi-jeva dobijen pomocu Monte Carlo metode." << endl;
+		cout << "Skup pi-jeva dobijen pomocu Monte Carlo metode." << endl;
 		for (int i = 0; i < n; i++)
 		{
 			for (int j = 0; j < n; j++)
 			{
-				cout << "(" << i + 1 << ", " << j + 1 << ")-ti \pi je: " << BrPi[i][j] << " ";
+				cout << "(" << i + 1 << ", " << j + 1 << ")-ti pi je: " << BrPi[i][j] << " ";
 
 			}
 			cout << endl;
@@ -102,7 +104,7 @@ skok:
 
 	for (int i = 0; i < n; i++)
 	{
-		cout << "Srednja vrijednost i standardna devijacija" << i + 1 << "-tog eksperimenta: " << srVrij[i] << " +- " << stDev[i] << endl;
+		cout << "Srednja vrijednost i standardna devijacija" << i + 1 << "-tog eksperimenta: " << srVrij[i] << " +/- " << stDev[i] << endl;
 	}
 
 	cout << "Zelite li ponoviti sve eksperimente s drugom potencijom?(y/n)" << endl;
@@ -114,6 +116,21 @@ skok:
 		goto stop;
 	}
 stop:
+	/*
+		Pisanje file-a.
+	*/
+	ofstream file;    //Create file pointer variable
+	file.open("data.txt");    //Initialize 'file" to open "asd.txt" for writing
+	for (int i=0; i <n; i++)
+	{
+		file << i<<"	"<<srVrij[i]<<"	"<<stDev[i]<< endl;   //You'll need to add a new line if you want 1 number per line
+	  //Assuming this is in microseconds so sleep for 1 second
+	}
+	file.close();
+	
+
+
+
 	system("PAUSE");
 	return 0;
 }
