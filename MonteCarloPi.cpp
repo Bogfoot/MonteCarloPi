@@ -10,7 +10,6 @@
 using namespace std;
 
 
-
 /*
 	Treba napraviti MCSim za generiranje broja \pi.
 	U kvadratu površine 1 (1x1) generirati će se parovi brojeva (x,y)&[0-1].
@@ -22,8 +21,8 @@ int main(int /*argc*/, char* /*argv[]*/, char* /*envp[]*/)
 	//srand((unsigned int)time(nullptr));
 
 	// Poboljsan rand s rezolucijom boljom od sekunde.
-	auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
-	srand((unsigned int)duration.count());
+	//auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
+	//srand((unsigned int)duration.count());
 
 	char repeat = 'y';
 	while (repeat == 'y')
@@ -56,8 +55,8 @@ PiMatrix CalculateMonteCarloPi(int n)
 			int BrTuKrug = 0;
 			for (int i = 0; i < pow(10, j); i++)
 			{
-				double rand_x = ((double)rand() / (RAND_MAX));
-				double rand_y = ((double)rand() / (RAND_MAX));
+				double rand_x = GetRandomNumber();
+				double rand_y = GetRandomNumber();
 				double polozaj = pow(rand_x, 2) + pow(rand_y, 2);
 				if (sqrt(polozaj) <= 1)
 					BrTuKrug++;
@@ -100,6 +99,19 @@ PiArray CalculateStdDevs(const PiMatrix& pis, const PiArray& avg, int n)
 		stDev[i] = sqrt(stDev[i] / ((double)n));
 	}
 	return stDev;
+}
+
+double GetRandomNumber()
+{
+	constexpr double maxRandInt = numeric_limits<unsigned int>::max();
+
+	// 'static' ovdje znaci da se ova inicijalizacija izvrsava samo kod prvog poziva funkcije GetRandomNumber();
+	static std::random_device rd;
+	static std::mt19937 rng{ rd() };
+	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
+	
+	// Racunanje slucajnog broja kod svakog poziva funkcije GetRandomNumber();
+	return distribution(rng) / maxRandInt;
 }
 
 int UiPromptInteger(const string& prompt, int min, int max)

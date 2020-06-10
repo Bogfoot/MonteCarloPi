@@ -11,6 +11,7 @@ using PiMatrix = std::array<PiArray, MaxIterations>;
 PiMatrix CalculateMonteCarloPi(int n);
 PiArray CalculateAverages(const PiMatrix& pis, int n);
 PiArray CalculateStdDevs(const PiMatrix& pis, const PiArray& avg, int n);
+double GetRandomNumber();
 void PrintPiMatrix(const PiMatrix& pis, int size);
 int UiPromptInteger(const std::string& prompt, int min, int max);
 char UiPromptChar(const std::string& prompt);
