@@ -16,3 +16,4 @@ void PrintPiMatrix(const PiMatrix& pis, int size);
 int UiPromptInteger(const std::string& prompt, int min, int max);
 char UiPromptChar(const std::string& prompt);
 void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
+void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);

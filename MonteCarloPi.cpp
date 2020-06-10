@@ -5,7 +5,16 @@
 #include <math.h>
 #include <time.h>
 #include <iomanip>
+
 #include "MonteCarloPi.h"
+#include <TApplication.h>
+#include <TF1.h>
+#include <TH1F.h>
+#include <TCanvas.h>
+#include <TPaveLabel.h>
+#include <TPaveText.h>
+#include <TArrow.h>
+#include <TSystem.h>
 
 using namespace std;
 
@@ -16,13 +25,11 @@ using namespace std;
 	Upisati kružnicu radiusa 1, površine 1 * 1 * \pi= \pi. Prebrojati koliko se točaka nalazi u kružnici.
 	BrTuKrug/BrTuKvad=\pi/4
 */
-int main(int /*argc*/, char* /*argv[]*/, char* /*envp[]*/)
+int main(int argc, char* argv[], char* /*envp[]*/)
 {
-	//srand((unsigned int)time(nullptr));
-
-	// Poboljsan rand s rezolucijom boljom od sekunde.
-	//auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
-	//srand((unsigned int)duration.count());
+	TApplication app("ROOT Application", &argc, argv);
+	TCanvas canvas("c1");
+	//TH1F h("h", "example histogram", MaxIterations, 2.0, 4.0);
 
 	char repeat = 'y';
 	while (repeat == 'y')
@@ -30,11 +37,21 @@ int main(int /*argc*/, char* /*argv[]*/, char* /*envp[]*/)
 		cout << endl;
 		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
 
+		// Mjeri vrijeme racunanja.
+		auto start = chrono::high_resolution_clock::now();
+
 		auto BrPi = CalculateMonteCarloPi(n);
 		auto srVrij = CalculateAverages(BrPi, n);
 		auto stDev = CalculateStdDevs(BrPi, srVrij, n);
 
+		auto elapsed = chrono::high_resolution_clock::now() - start;
+		auto us = chrono::duration_cast<chrono::microseconds>(elapsed).count();
+		cout << "Vrijeme: " << us / 1000.0 << " ms" << endl;
+
 		ConsolePrintResults(BrPi, srVrij, stDev, n);
+
+		GuiPrintResults(BrPi, srVrij, stDev, n);
+		canvas.Update();
 
 		cout << endl;
 		repeat = UiPromptChar("Zelite li ponoviti sve eksperimente s drugom potencijom (y/n)?");
@@ -42,6 +59,16 @@ int main(int /*argc*/, char* /*argv[]*/, char* /*envp[]*/)
 
 	system("PAUSE");
 	return 0;
+}
+
+void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
+{
+	TH1F* h = new TH1F("h", "example histogram", n, 2.0, 4.0);
+	for (int i = 0; i < n; i++)
+	{
+		h->Fill(pis[0][i]);
+	}
+	h->Draw();
 }
 
 PiMatrix CalculateMonteCarloPi(int n)
