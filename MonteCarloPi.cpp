@@ -65,10 +65,12 @@ void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stD
 	TH1F* h = new TH1F("h", "example histogram", n, 2.0, 4.0);
 	for (int i = 0; i < n; i++)
 	{
-		h->Fill(pis[0][i]);
+
+		h->Fill(avg[i]);
 	}
 	h->Draw();
 }
+
 
 PiMatrix CalculateMonteCarloPi(int n)
 {
@@ -87,8 +89,8 @@ PiMatrix CalculateMonteCarloPi(int n)
 				if (sqrt(polozaj) <= 1)
 					BrTuKrug++;
 			}
-			double pi = ((double)BrTuKrug / pow(10, j) * 4);
-			BrPi[k][j] = pi;
+			BrPi[k][j] = ((double)BrTuKrug / pow(10, j) * 4);
+			 
 		}
 	}
 	return BrPi;
