@@ -142,7 +142,6 @@ double GetRandomNumber()
 	
 	//static normal_distribution<double> distribution(0, (double)maxRandInt-1);
 	//static chi_squared_distribution<double> distribution(1);
-	//static gamma_distribution<long double> distribution(0, 1);
 	//static student_t_distribution<double> distribution(1.0);
 	// Racunanje slucajnog broja kod svakog poziva funkcije GetRandomNumber();
 	return distribution(rng) / maxRandInt;
