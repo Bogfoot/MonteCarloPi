@@ -11,10 +11,12 @@
 #include <TF1.h>
 #include <TH1F.h>
 #include <TCanvas.h>
+#include <TFrame.h>
 #include <TPaveLabel.h>
 #include <TPaveText.h>
 #include <TArrow.h>
 #include <TSystem.h>
+#include <TGraphErrors.h>
 
 using namespace std;
 
@@ -35,7 +37,7 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	{
 		cout << endl;
 		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
-
+	
 		// Mjeri vrijeme racunanja.
 		auto start = chrono::high_resolution_clock::now();
 
@@ -46,8 +48,9 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 		auto elapsed = chrono::high_resolution_clock::now() - start;
 		auto us = chrono::duration_cast<chrono::microseconds>(elapsed).count();
 		cout << "Vrijeme: " << us / 1000.0 << " ms" << endl;
-
+		
 		ConsolePrintResults(BrPi, srVrij, stDev, n);
+		Potencija(n);
 
 		GuiPrintResults(BrPi, srVrij, stDev, n);
 		canvas.Update();
@@ -60,15 +63,16 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	return 0;
 }
 
-void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
-{
-	TH1F* h = new TH1F("h", "example histogram", n, 2.0, 4.0);
-	for (int i = 0; i < n; i++)
-	{
 
-		h->Fill(avg[i]);
-	}
-	h->Draw();
+void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, int pot)
+{
+	auto c48 = new TCanvas("c48", "c48", 200, 10, 600, 400);
+
+	auto tg = new TGraphErrors(3, pot, avg, 0, stDev);
+	c48->Divide(2, 1);
+	c48->cd(1);
+	gPad->DrawFrame(0, 0, 4, 8); 
+	tg->Draw("PC");
 }
 
 
@@ -174,6 +178,14 @@ char UiPromptChar(const string& prompt)
 	cout << prompt << endl;
 	cin >> n;
 	return n;
+}
+void Potencija(int n)
+{
+	int pot[MaxIterations];
+	for (int i = 0; i <= n; i++)
+		pot[i] = i;
+
+
 }
 
 void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
