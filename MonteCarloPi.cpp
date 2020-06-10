@@ -1,6 +1,7 @@
 ﻿#include <assert.h>
 #include <iostream>
 #include <random>
+#include <chrono>
 #include <math.h>
 #include <time.h>
 #include <iomanip>
@@ -18,7 +19,11 @@ using namespace std;
 */
 int main(int /*argc*/, char* /*argv[]*/, char* /*envp[]*/)
 {
-	srand((unsigned int)time(nullptr));
+	//srand((unsigned int)time(nullptr));
+
+	// Poboljsan rand s rezolucijom boljom od sekunde.
+	auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
+	srand((unsigned int)duration.count());
 
 	char repeat = 'y';
 	while (repeat == 'y')
