@@ -4,7 +4,7 @@
 #include <chrono>
 
 // Definicije i pragme koje ignoriraju errore i warninge kod kompajliranja ROOT-a 
-#define __find_end find_end
+#define __find_end find_end //stari compiler javlja grešku ; samo komentirati 
 #pragma warning (push)
 #pragma warning (disable: 4996)
 #pragma warning (disable: 4068)

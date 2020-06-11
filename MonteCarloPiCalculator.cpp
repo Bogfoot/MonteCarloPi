@@ -21,8 +21,8 @@ void MonteCarloPiCalculator::CalculateMonteCarloPi()
 {
 	assert((n >= 1) && (n <= MaxIterations));
 
-	for (int k = 0; k <= n; k++) {
-		for (int j = 0; j <= n; j++) {
+	for (int k = 0; k < n; k++) {
+		for (int j = 0; j < n; j++) {
 			int BrTuKrug = 0;
 			for (int i = 0; i < pow(10, j); i++)
 			{
@@ -39,9 +39,9 @@ void MonteCarloPiCalculator::CalculateMonteCarloPi()
 
 void MonteCarloPiCalculator::CalculateAverages()
 {
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j <= n; j++)
+		for (int j = 0; j < n; j++)
 		{
 			srVrij[i] += BrPi[j][i];
 		}
@@ -55,9 +55,9 @@ void MonteCarloPiCalculator::CalculateStdDevs()
 		sqrt(suma(x_i - x_sr)^2/n)
 	*/
 
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j <= n; j++)
+		for (int j = 0; j < n; j++)
 		{
 			stDev[i] += pow(BrPi[j][i] - srVrij[i], 2);
 		}
@@ -67,7 +67,7 @@ void MonteCarloPiCalculator::CalculateStdDevs()
 
 void MonteCarloPiCalculator::Potencija()
 {
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 		pot[i] = i;
 }
 

@@ -31,6 +31,7 @@ void MainLoop(void* arg)
 		cout << endl;
 		repeat = UiPromptChar("Zelite li ponoviti sve eksperimente s drugom potencijom (y/n)?");
 	};
+	
 }
 
 
@@ -42,6 +43,7 @@ void MainLoop(void* arg)
 */
 int main(int argc, char* argv[], char* /*envp[]*/)
 {
+	
 	// Glavni ROOT prozor.
 	MonteCarloApp app{argc, argv};
 
@@ -56,22 +58,21 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	// Zustavi 'backgrond' thread ako je jos uvijek aktivan.
 	thread.Kill();
 
-	system("PAUSE");
 	return 0;
 }
 
 void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 {
 	c48->cd(1);
-	auto* gr = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());
+	auto* gr = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());//Moraju biti pointeri
 	gr->SetLineColor(2);
 	gr->SetLineWidth(4);
 	gr->SetMarkerColor(4);
 	gr->SetMarkerSize(1.5);
 	gr->SetMarkerStyle(21);
-	gr->SetTitle("Option ACP example");
-	gr->GetXaxis()->SetTitle("X title");
-	gr->GetYaxis()->SetTitle("Y title");
+	gr->SetTitle("Graficki prikaz srednje vrijednosti po potenciji");
+	gr->GetXaxis()->SetTitle("Potencija");
+	gr->GetYaxis()->SetTitle("Srednja vrijednost");
 
 	gPad->DrawFrame(0, 0, 4, 8);
 	gr->Draw("ACP");
@@ -81,12 +82,14 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	// Drugi grafikon, samo za probu
 	c48->cd(2);
 	auto* gr2 = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());
-	gr2->SetTitle("drugi grafikon");
-
+	gr2->SetTitle("Isto kao i prvi grafikon");
+	gr2->GetXaxis()->SetTitle("Potencija");
+	gr2->GetYaxis()->SetTitle("Srednja vrijednost");
 	gPad->DrawFrame(0, 0, 4, 8);
-	gr2->Draw("ACP");
+	gr2->Draw("AP");
 	c48->Modified();
 	c48->Update();
+
 }
 
 
@@ -134,19 +137,19 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	}
 
 	cout << endl << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << avg[i] << endl;
 	}
 
 	cout << endl << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << stDev[i] << endl;
 	}
 
 	cout << endl;
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
 		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << avg[i] << " +- " << stDev[i] << endl;
 	}
@@ -154,9 +157,9 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 
 void PrintPiMatrix(const PiMatrix& pis, int n)
 {
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j <= n; j++)
+		for (int j = 0; j < n; j++)
 		{
 			cout << "(" << i + 1 << ", " << j + 1 << ")-ti pi je: " << pis[i][j] << " ";
 		}
