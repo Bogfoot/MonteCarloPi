@@ -1,10 +1,20 @@
 #pragma once
-#define __find_end find_end
 
 #include <array>
 #include <string>
 #include <chrono>
 
+// Deinicije i pragme koje ispravljaju errore i warninge kod kompajliranja ROOT-a 
+#define __find_end find_end
+#pragma warning (push)
+#pragma warning (disable: 4996)
+#pragma warning (disable: 4068)
+#pragma warning (disable: 4127)
+#pragma warning (disable: 4100)
+#pragma warning (disable: 4245)
+#pragma warning (disable: 4244)
+
+#include <TThread.h>
 #include <TApplication.h>
 #include <TF1.h>
 #include <TH1F.h>
@@ -13,8 +23,11 @@
 #include <TPaveLabel.h>
 #include <TPaveText.h>
 #include <TArrow.h>
-#include <TSystem.h>
 #include <TGraphErrors.h>
+
+// Vrati warning nivo nakon kompajliranja ROOT-a
+#pragma warning (pop)
+
 
 
 // Klasa MonteCarloApp sluzi za grupiranje UI elementa i omogucava multi-thread rad.
@@ -22,7 +35,7 @@ class MonteCarloApp : public TApplication
 {
 public:
 
-	MonteCarloApp() : TApplication{ "ROOT Application", nullptr, nullptr }
+	MonteCarloApp(int argc, char* argv[]) : TApplication{ "ROOT Application", &argc, argv }
 	{
 	}
 

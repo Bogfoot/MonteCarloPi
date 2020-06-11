@@ -2,22 +2,44 @@
 #include <iostream>
 #include <random>
 #include <math.h>
-#include <time.h>
 #include <iomanip>
 
 #include "MonteCarloPi.h"
-#include <TApplication.h>
-#include <TF1.h>
-#include <TH1F.h>
-#include <TCanvas.h>
-#include <TFrame.h>
-#include <TPaveLabel.h>
-#include <TPaveText.h>
-#include <TArrow.h>
-#include <TSystem.h>
-#include <TGraphErrors.h>
 
 using namespace std;
+
+
+// Glavna pet;ja programa cita korisnicki unos i pokrece racunanje.
+void MainLoop(void* arg)
+{
+	auto* app = (MonteCarloApp*)arg;
+
+	Stopwatch sw;
+	char repeat = 'y';
+	while (repeat == 'y')
+	{
+		cout << endl;
+		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
+
+		// Mjeri vrijeme racunanja.
+		sw.Start();
+
+		auto BrPi = CalculateMonteCarloPi(n);
+		auto srVrij = CalculateAverages(BrPi, n);
+		auto stDev = CalculateStdDevs(BrPi, srVrij, n);
+
+		cout << "Vrijeme: " << sw.ElapsedMilliseconds() << " ms" << endl;
+
+		ConsolePrintResults(BrPi, srVrij, stDev, n);
+		Potencija(n);
+
+		GuiPrintResults(app, BrPi, srVrij, stDev, n);
+		app->Invalidate();
+
+		cout << endl;
+		repeat = UiPromptChar("Zelite li ponoviti sve eksperimente s drugom potencijom (y/n)?");
+	};
+}
 
 
 /*
@@ -28,49 +50,31 @@ using namespace std;
 */
 int main(int argc, char* argv[], char* /*envp[]*/)
 {
-	TApplication app("ROOT Application", &argc, argv);
-	TCanvas canvas("c1");
+	// Glavni ROOT prozor.
+	MonteCarloApp app{argc, argv};
 
-	Stopwatch sw;
-   char repeat = 'y';
-	while (repeat == 'y')
-	{
-		cout << endl;
-		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
-	
-		// Mjeri vrijeme racunanja.
-		sw.Start();
+	// Deklariraj i pokreni 'background' thread.
+	TThread thread("mainLoop", MainLoop);
+	thread.Run(&app);
 
-		auto BrPi = CalculateMonteCarloPi(n);
-		auto srVrij = CalculateAverages(BrPi, n);
-		auto stDev = CalculateStdDevs(BrPi, srVrij, n);
+	// Pokreni ROOT 
+	app.Run(true);
 
-		cout << "Vrijeme: " << sw.StopAndElapsedMilliseconds() << " ms" << endl;
-		
-		ConsolePrintResults(BrPi, srVrij, stDev, n);
-		Potencija(n);
-
-		GuiPrintResults(BrPi, srVrij, stDev, n);
-		canvas.Update();
-
-		cout << endl;
-		repeat = UiPromptChar("Zelite li ponoviti sve eksperimente s drugom potencijom (y/n)?");
-	};
+	// Zustavi 'backgrond' thread ako je jos uvijek aktivan.
+	thread.Kill();
 
 	system("PAUSE");
 	return 0;
 }
 
 
-void GuiPrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
+void GuiPrintResults(MonteCarloApp* app, const PiMatrix& /*pis*/, const PiArray& avg, const PiArray& /*stDev*/, int n)
 {
-	TH1F* h = new TH1F("h", "example histogram", n, 2.0, 4.0);
+	app->th1f.Clear();
 	for (int i = 0; i < n; i++)
 	{
-
-		h->Fill(avg[i]);
+		app->th1f.Fill(avg[i]);
 	}
-	h->Draw();
 }
 
 
