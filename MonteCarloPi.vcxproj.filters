@@ -18,9 +18,15 @@
     <ClCompile Include="MonteCarloPi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MonteCarloPiCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MonteCarloPi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MonteCarloPiCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

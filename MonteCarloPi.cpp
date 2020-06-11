@@ -9,7 +9,7 @@
 using namespace std;
 
 
-// Glavna pet;ja programa cita korisnicki unos i pokrece racunanje.
+// Glavna petlja programa cita korisnicki unos i pokrece racunanje.
 void MainLoop(void* arg)
 {
 	auto* app = (MonteCarloApp*)arg;
@@ -21,19 +21,11 @@ void MainLoop(void* arg)
 		cout << endl;
 		auto n = UiPromptInteger("Unesi potenciju: ", 1, MaxIterations);
 
-		// Mjeri vrijeme racunanja.
 		sw.Start();
-
-		auto BrPi = CalculateMonteCarloPi(n);
-		auto srVrij = CalculateAverages(BrPi, n);
-		auto stDev = CalculateStdDevs(BrPi, srVrij, n);
-
+		app->PiCalc.Calculate(n);
 		cout << "Vrijeme: " << sw.ElapsedMilliseconds() << " ms" << endl;
 
-		ConsolePrintResults(BrPi, srVrij, stDev, n);
-		Potencija(n);
-
-		GuiPrintResults(app, BrPi, srVrij, stDev, n);
+		ConsolePrintResults(app->PiCalc.BrPi, app->PiCalc.srVrij, app->PiCalc.stDev, app->PiCalc.n);
 		app->Invalidate();
 
 		cout << endl;
@@ -54,6 +46,7 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	MonteCarloApp app{argc, argv};
 
 	// Deklariraj i pokreni 'background' thread.
+	// Background thread cita komande s konzole i izvrsava racunanje.
 	TThread thread("mainLoop", MainLoop);
 	thread.Run(&app);
 
@@ -67,90 +60,35 @@ int main(int argc, char* argv[], char* /*envp[]*/)
 	return 0;
 }
 
-
-void GuiPrintResults(MonteCarloApp* app, const PiMatrix& /*pis*/, const PiArray& avg, const PiArray& /*stDev*/, int n)
+void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 {
-	app->th1f.Clear();
-	for (int i = 0; i < n; i++)
-	{
-		app->th1f.Fill(avg[i]);
-	}
+	c48->cd(1);
+	auto* gr = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());
+	gr->SetLineColor(2);
+	gr->SetLineWidth(4);
+	gr->SetMarkerColor(4);
+	gr->SetMarkerSize(1.5);
+	gr->SetMarkerStyle(21);
+	gr->SetTitle("Option ACP example");
+	gr->GetXaxis()->SetTitle("X title");
+	gr->GetYaxis()->SetTitle("Y title");
+
+	gPad->DrawFrame(0, 0, 4, 8);
+	gr->Draw("ACP");
+	c48->Modified();
+	c48->Update();
+
+	// Drugi grafikon, samo za probu
+	c48->cd(2);
+	auto* gr2 = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());
+	gr2->SetTitle("drugi grafikon");
+
+	gPad->DrawFrame(0, 0, 4, 8);
+	gr2->Draw("ACP");
+	c48->Modified();
+	c48->Update();
 }
 
-
-PiMatrix CalculateMonteCarloPi(int n)
-{
-	assert((n >= 1) && (n <= MaxIterations));
-
-	PiMatrix BrPi{};
-
-	for (int k = 0; k <= n; k++) {
-		for (int j = 0; j <= n; j++) {
-			int BrTuKrug = 0;
-			for (int i = 0; i < pow(10, j); i++)
-			{
-				double rand_x = GetRandomNumber();
-				double rand_y = GetRandomNumber();
-				double polozaj = pow(rand_x, 2) + pow(rand_y, 2);
-				if (sqrt(polozaj) <= 1)
-					BrTuKrug++;
-			}
-			BrPi[k][j] = ((double)BrTuKrug / pow(10, j) * 4);
-			 
-		}
-	}
-	return BrPi;
-}
-
-PiArray CalculateAverages(const PiMatrix& pis, int n)
-{
-	PiArray srVrij{};
-
-	for (int i = 0; i <= n; i++)
-	{
-		for (int j = 0; j <= n; j++)
-		{
-			srVrij[i] += pis[j][i];
-		}
-		srVrij[i] = srVrij[i] / ((double)n+1);
-	}
-	return srVrij;
-}
-
-PiArray CalculateStdDevs(const PiMatrix& pis, const PiArray& avg, int n)
-{
-	/*
-		sqrt(suma(x_i - x_sr)^2/n)
-	*/
-
-	PiArray stDev{};
-	for (int i = 0; i <= n; i++)
-	{
-		for (int j = 0; j <= n; j++)
-		{
-			stDev[i] += pow(pis[j][i] - avg[i], 2);
-		}
-		stDev[i] = sqrt(stDev[i] / ((double)n+1));
-	}
-	return stDev;
-}
-
-double GetRandomNumber()
-{
-	constexpr double maxRandInt = numeric_limits<unsigned int>::max();
-
-	// 'static' ovdje znaci da se ova inicijalizacija izvrsava samo kod prvog poziva funkcije GetRandomNumber();
-	static std::random_device rd;
-	static std::mt19937 rng{ rd() };
-	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
-	
-	
-	//static normal_distribution<double> distribution(0, (double)maxRandInt-1);
-	//static chi_squared_distribution<double> distribution(1);
-	//static student_t_distribution<double> distribution(1.0);
-	// Racunanje slucajnog broja kod svakog poziva funkcije GetRandomNumber();
-	return distribution(rng) / maxRandInt;
-}
 
 int UiPromptInteger(const string& prompt, int min, int max)
 {
@@ -179,14 +117,6 @@ char UiPromptChar(const string& prompt)
 	cout << prompt << endl;
 	cin >> n;
 	return n;
-}
-void Potencija(int n)
-{
-	int pot[MaxIterations];
-	for (int i = 0; i <= n; i++)
-		pot[i] = i;
-
-
 }
 
 void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n)
@@ -233,106 +163,3 @@ void PrintPiMatrix(const PiMatrix& pis, int n)
 		cout << endl;
 	}
 }
-
-//int main()
-//{
-//	cout << std::fixed;
-//	cout << std::setprecision(5);
-//	srand(time(NULL));
-//	double rand_x, rand_y, BrPi[11][11];
-//	double polozaj;
-//	int n;
-//	char odg, odg1;
-//	double srVrij[11] = { 0.0 }, stDev[11] = { 0.0 };
-//
-//skok:
-//	cout << "Unesi potenciju: " << endl;
-//	cin >> n;
-//
-//	for (int k = 0; k < n; k++) {
-//		for (int j = 0; j < n; j++) {
-//			int BrTuKrug = 0;
-//			for (int i = 0; i < pow(10, j); i++)
-//			{
-//				rand_x = ((double)rand() / (RAND_MAX));
-//				rand_y = ((double)rand() / (RAND_MAX));
-//				polozaj = pow(rand_x, 2) + pow(rand_y, 2);
-//				if (sqrt(polozaj) <= 1)
-//					BrTuKrug++;
-//
-//			}
-//			double pi = ((double)BrTuKrug / pow(10, j) * 4);
-//			BrPi[k][j] = pi;
-//		}
-//	}
-//	cout << "Zelite li ispisati dobivene pi-jeve?(y/n)" << endl;
-//	cin >> odg;
-//	if (odg == 'y')
-//	{
-//		cout << "Skup \pi-jeva dobijen pomocu Monte Carlo metode." << endl;
-//		for (int i = 0; i < n; i++)
-//		{
-//			for (int j = 0; j < n; j++)
-//			{
-//				cout << "(" << i + 1 << ", " << j + 1 << ")-ti \pi je: " << BrPi[i][j] << " ";
-//
-//			}
-//			cout << endl;
-//		}
-//	}
-//	else
-//	{
-//
-//	}
-//	/*Treba skužit kako uključiti grafove */
-//
-///*Srednja vrijednost i standardna devijacija*/
-//
-//
-//	cout << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
-//
-//	for (int i = 0; i < n; i++)
-//	{
-//
-//		for (int j = 0; j < n; j++)
-//		{
-//			srVrij[i] += BrPi[j][i];
-//		}
-//		srVrij[i] = srVrij[i] / ((double)n);
-//		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << srVrij[i] << endl;
-//	}
-//
-//	cout << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
-//	/*
-//		sqrt(suma(x_i - x_sr)^2/n)
-//	*/
-//	for (int i = 0; i < n; i++)
-//	{
-//		for (int j = 0; j < n; j++)
-//		{
-//			stDev[i] += pow(BrPi[j][i] - srVrij[i], 2);
-//		}
-//		stDev[i] = sqrt(stDev[i] / ((double)n));
-//	}
-//	for (int i = 0; i < n; i++)
-//	{
-//		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << stDev[i] << endl;
-//	}
-//
-//	for (int i = 0; i < n; i++)
-//	{
-//		cout << "Srednja vrijednost i standardna devijacija" << i + 1 << "-tog eksperimenta: " << srVrij[i] << " +- " << stDev[i] << endl;
-//	}
-//
-//	cout << "Zelite li ponoviti sve eksperimente s drugom potencijom?(y/n)" << endl;
-//	cin >> odg1;
-//	if (odg1 == 'y')
-//		goto skok;
-//	else
-//	{
-//		goto stop;
-//	}
-//stop:
-//	system("PAUSE");
-//	return 0;
-//}

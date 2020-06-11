@@ -1,14 +1,14 @@
 #pragma once
 
-#include <array>
 #include <string>
 #include <chrono>
 
-// Deinicije i pragme koje ispravljaju errore i warninge kod kompajliranja ROOT-a 
+// Definicije i pragme koje ignoriraju errore i warninge kod kompajliranja ROOT-a 
 #define __find_end find_end
 #pragma warning (push)
 #pragma warning (disable: 4996)
 #pragma warning (disable: 4068)
+#pragma warning (disable: 4706)
 #pragma warning (disable: 4127)
 #pragma warning (disable: 4100)
 #pragma warning (disable: 4245)
@@ -28,32 +28,35 @@
 // Vrati warning nivo nakon kompajliranja ROOT-a
 #pragma warning (pop)
 
+#include "MonteCarloPiCalculator.h"
 
 
 // Klasa MonteCarloApp sluzi za grupiranje UI elementa i omogucava multi-thread rad.
 class MonteCarloApp : public TApplication
 {
 public:
+	MonteCarloPiCalculator PiCalc;
 
-	MonteCarloApp(int argc, char* argv[]) : TApplication{ "ROOT Application", &argc, argv }
+	MonteCarloApp(int argc, char* argv[]) : PiCalc{}, TApplication { "ROOT Application", & argc, argv }
 	{
+		// Inicijalizacija top-level kanvasa
+		c48 = new TCanvas("c48", "c48", 200, 10, 600, 400);
+		c48->GetFrame()->SetFillColor(21);
+		c48->GetFrame()->SetBorderSize(12);
+		c48->Divide(2, 1);
 	}
-
-	// Ovdje treba dodati sve UI elemente vidljive na TCanvas-u.
-	TCanvas canvas{ "c1" };
-	TH1F th1f{ "th1f", "", 11, 2.0, 4.0 };
 
 	virtual void StartIdleing()
 	{
+		// Ova se funkcija poziva iz ROOT UI threada.
+
 		TApplication::StartIdleing();
 
 		// Re-draw when data changes.
 		if (invalidated)
 		{
 			invalidated = false;
-
-			th1f.Draw();
-			canvas.Update();
+			UpdateCanvas(PiCalc);
 		}
 	}
 
@@ -63,24 +66,11 @@ public:
 	}
 
 private:
+	TCanvas* c48 = nullptr;
 	bool invalidated = false;
+
+	void UpdateCanvas(const MonteCarloPiCalculator& calc);
 };
-
-
-constexpr int MaxIterations = 11;
-using PiArray = std::array<double, MaxIterations>;
-using PiMatrix = std::array<PiArray, MaxIterations>;
-
-PiMatrix CalculateMonteCarloPi(int n);
-PiArray CalculateAverages(const PiMatrix& pis, int n);
-PiArray CalculateStdDevs(const PiMatrix& pis, const PiArray& avg, int n);
-double GetRandomNumber();
-void PrintPiMatrix(const PiMatrix& pis, int size);
-int UiPromptInteger(const std::string& prompt, int min, int max);
-char UiPromptChar(const std::string& prompt);
-void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
-void GuiPrintResults(MonteCarloApp* app, const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
-void Potencija(int n);
 
 
 struct Stopwatch
@@ -102,3 +92,9 @@ struct Stopwatch
 private:
    std::chrono::steady_clock::time_point start;
 };
+
+
+void PrintPiMatrix(const PiMatrix& pis, int size);
+int UiPromptInteger(const std::string& prompt, int min, int max);
+char UiPromptChar(const std::string& prompt);
+void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);

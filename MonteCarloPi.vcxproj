@@ -154,9 +154,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MonteCarloPi.cpp" />
+    <ClCompile Include="MonteCarloPiCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MonteCarloPi.h" />
+    <ClInclude Include="MonteCarloPiCalculator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
