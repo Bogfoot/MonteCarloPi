@@ -1,4 +1,4 @@
-#include "MonteCarloPiCalculator.h"
+﻿#include "MonteCarloPiCalculator.h"
 #include <assert.h>
 #include <numeric>
 #include <random>
@@ -45,7 +45,7 @@ void MonteCarloPiCalculator::CalculateAverages()
 		{
 			srVrij[i] += BrPi[j][i];
 		}
-		srVrij[i] = srVrij[i] / ((double)n + 1);
+		srVrij[i] = srVrij[i] / ((double)n );
 	}
 }
 
@@ -77,13 +77,17 @@ double MonteCarloPiCalculator::GetRandomNumber()
 
 	// 'static' ovdje znaci da se ova inicijalizacija izvrsava samo kod prvog poziva funkcije GetRandomNumber();
 	static std::random_device rd;
-	static std::mt19937 rng{ rd() };
+	//static std::mt19937 rng{ rd() };
+	//static std::ranlux24 rng{ rd() };
+	//static std::default_random_engine rng{ rd() };
+	//static std::knuth_b rng{ rd() };
+	//static std::ranlux48 rng{ rng() };
+	
 	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
 
-
-	//static normal_distribution<double> distribution(0, (double)maxRandInt-1);
+	//static normal_distribution<double> distribution(0.5, 0.25); //ide bez dijeljenja jer je otprilikei između 0 i 1
 	//static chi_squared_distribution<double> distribution(1);
 	//static student_t_distribution<double> distribution(1.0);
 	// Racunanje slucajnog broja kod svakog poziva funkcije GetRandomNumber();
-	return distribution(rng) / maxRandInt;
+	return distribution(rng) / ((double)maxRandInt-1);
 }
