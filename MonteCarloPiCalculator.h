@@ -3,7 +3,8 @@
 #include <array>
 
 
-constexpr int MaxIterations = 11;
+constexpr int MaxIterations = 101;
+
 using PiArray = std::array<double, MaxIterations>;
 using PiMatrix = std::array<PiArray, MaxIterations>;
 

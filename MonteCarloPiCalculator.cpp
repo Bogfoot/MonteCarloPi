@@ -21,7 +21,7 @@ void MonteCarloPiCalculator::CalculateMonteCarloPi()
 {
 	assert((n >= 1) && (n <= MaxIterations));
 
-	for (int k = 0; k < n; k++) {
+	for (int k = 0; k < 100; k++) {
 		for (int j = 0; j < n; j++) {
 			int BrTuKrug = 0;
 			for (int i = 0; i < pow(10, j); i++)
@@ -41,11 +41,11 @@ void MonteCarloPiCalculator::CalculateAverages()
 {
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j < 100; j++)
 		{
 			srVrij[i] += BrPi[j][i];
 		}
-		srVrij[i] = srVrij[i] / ((double)n );
+		srVrij[i] = srVrij[i] / ((double)100.0 );
 	}
 }
 
@@ -57,11 +57,11 @@ void MonteCarloPiCalculator::CalculateStdDevs()
 
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j < 100; j++)
 		{
 			stDev[i] += pow(BrPi[j][i] - srVrij[i], 2);
 		}
-		stDev[i] = sqrt(stDev[i] / ((double)n + 1));
+		stDev[i] = sqrt(stDev[i] / ((double)101.0));
 	}
 }
 
@@ -79,7 +79,7 @@ double MonteCarloPiCalculator::GetRandomNumber()
 	static std::random_device rd;
 	//static std::mt19937 rng{ rd() };
 	//static std::ranlux24 rng{ rd() };
-	//static std::default_random_engine rng{ rd() };
+	static std::default_random_engine rng{ rd() };
 	//static std::knuth_b rng{ rd() };
 	//static std::ranlux48 rng{ rng() };
 	

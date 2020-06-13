@@ -157,7 +157,7 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 
 void PrintPiMatrix(const PiMatrix& pis, int n)
 {
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		for (int j = 0; j < n; j++)
 		{
