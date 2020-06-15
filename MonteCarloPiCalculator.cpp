@@ -10,7 +10,7 @@ using namespace std;
 void MonteCarloPiCalculator::Calculate(int count)
 {
 	n = count;
-	int m = 100;
+
 	CalculateMonteCarloPi();
 	CalculateAverages();
 	CalculateStdDevs();

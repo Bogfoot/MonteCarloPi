@@ -24,6 +24,8 @@
 #include <TPaveText.h>
 #include <TArrow.h>
 #include <TGraphErrors.h>
+#include <TGraph.h>
+
 
 // Vrati warning nivo nakon kompajliranja ROOT-a
 #pragma warning (pop)
@@ -97,5 +99,5 @@ private:
 void PrintPiMatrix(const PiMatrix& pis, int size);
 int UiPromptInteger(const std::string& prompt, int min, int max);
 char UiPromptChar(const std::string& prompt);
-void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiMatrix& relDiff, int m);
-void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m);
+void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiVector& relDiff, int m);
+void PrintRelDiffMatrix(const PiVector& relDiff, int n, int m);

@@ -14,7 +14,7 @@ void MainLoop(void* arg)
 {
 	auto* app = (MonteCarloApp*)arg;
 
-	Stopwatch sw;
+	Stopwatch sw; 
 	char repeat = 'y';
 	while (repeat == 'y')
 	{
@@ -41,7 +41,8 @@ void MainLoop(void* arg)
 	Upisati kružnicu radiusa 1, površine 1 * 1 * \pi= \pi. Prebrojati koliko se točaka nalazi u kružnici.
 	BrTuKrug/BrTuKvad=\pi/4
 */
-int main(int argc, char* argv[], char* /*envp[]*/)
+int main(int argc, char* argv[], char* /*envp[]*/) //tu se javlja neki "zeleni" error u vezi veličine stacka,
+												   //ne znam što to znači ni kako popraviti
 {
 	
 	// Glavni ROOT prozor.
@@ -92,35 +93,34 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	c48->Update();
 	
 	//treći graf
-	/*
-	c48->cd(3);
-	auto* gr3 = new TGraphErrors(calc.m, calc.pot.data(), calc.relDiff.data(), nullptr, nullptr);
-	gr3->SetTitle("Relativna razlika");
-	gr3->GetXaxis()->SetTitle("Potencija");
-	gr3->GetYaxis()->SetTitle("Relativna Razlika");
-	gr3->SetLineColor(2);
-	gr3->SetLineWidth(4);
-	gr3->SetMarkerColor(4);
-	gr3->SetMarkerSize(1.5);
-	gr3->SetMarkerStyle(21);
-	gPad->DrawFrame(0, 0, 4, 8);
-	gr3->Draw("ALP");
-	c48->Modified();
-	c48->Update();
+	//
+	//c48->cd(3);
+	//auto* gr3 = new TGraph(calc.m, calc.pot.data(), calc.relDiff.data());
+	//gr3->SetTitle("Relativna razlika");
+	//gr3->GetXaxis()->SetTitle("Potencija");
+	//gr3->GetYaxis()->SetTitle("Relativna Razlika");
+	//gr3->SetLineColor(2);
+	//gr3->SetLineWidth(4);
+	//gr3->SetMarkerColor(4);
+	//gr3->SetMarkerSize(1.5);
+	//gr3->SetMarkerStyle(21);
+	//gPad->DrawFrame(0, 0, 4, 8);
+	//gr3->Draw("ALP");
+	//c48->Modified();
+	//c48->Update();
 
-	//četvrti graf
-	c48->cd(4);
-	auto* gr4 = new TGraphErrors(calc.m, calc.pot.data(), calc.relDiff.data(), nullptr, nullptr);
-	gr4->SetTitle("Relativna razlika");
-	gr4->GetXaxis()->SetTitle("Potencija");
-	gr4->GetYaxis()->SetTitle("Relativna Razlika");
-	gPad->DrawFrame(0, 0, 4, 8);
-	gr4->Draw("AP");
-	c48->Modified();
-	c48->Update();
-	*/
+
+	////četvrti graf
+	//c48->cd(4);
+	//auto* gr4 = new TGraphErrors(calc.m, calc.pot.data(), calc.relDiff.data());
+	//gr4->SetTitle("Relativna razlika");
+	//gr4->GetXaxis()->SetTitle("Potencija");
+	//gr4->GetYaxis()->SetTitle("Relativna Razlika");
+	//gPad->DrawFrame(0, 0, 4, 8);
+	//gr4->Draw("AP");
+	//c48->Modified();
+	//c48->Update();
 	
-
 }
 
 
@@ -153,7 +153,7 @@ char UiPromptChar(const string& prompt)
 	return n;
 }
 
-void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiMatrix& relDiff, int m)
+void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiVector& relDiff, int m)
 {
 	cout << std::fixed;
 	cout << std::setprecision(5);
@@ -166,6 +166,9 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 		cout << endl << "Skup pi-jeva dobijen pomocu Monte Carlo metode." << endl;
 		PrintPiMatrix(pis, n);
 	}
+	cout << endl;
+	PrintRelDiffMatrix(relDiff, n, m);
+
 
 	cout << endl << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
 	for (int i = 0; i < n; i++)
@@ -184,13 +187,11 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	{
 		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << avg[i] << " +- " << stDev[i] << endl;
 	}
-	cout << endl;
-	PrintRelDiffMatrix(relDiff,n,m);
-	
+
 
 }
 
-void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m)
+void PrintRelDiffMatrix(const PiVector& relDiff, int n, int m)
 {
 	cout << "Relaativna razlika od aproksimacije broja pi: \n";
 	for (int i = 0; i < m; i++)

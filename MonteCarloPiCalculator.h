@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 
 
 constexpr int MaxIterations = 101;
@@ -8,7 +9,7 @@ constexpr double aprox_PI = 3.141592653589793238463;
 
 using PiArray = std::array<double, MaxIterations>;
 using PiMatrix = std::array<PiArray, MaxIterations>;
-
+using PiVector = std::vector<std::vector<double>> ;
 
 class MonteCarloPiCalculator
 {
@@ -18,7 +19,7 @@ public:
 	int m = 100;
 
 	PiMatrix BrPi;
-	PiMatrix relDiff;
+	PiVector relDiff;
 
 	PiArray srVrij;
 	PiArray stDev;
