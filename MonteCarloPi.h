@@ -40,10 +40,10 @@ public:
 	MonteCarloApp(int argc, char* argv[]) : PiCalc{}, TApplication { "ROOT Application", & argc, argv }
 	{
 		// Inicijalizacija top-level kanvasa
-		c48 = new TCanvas("c48", "c48", 200, 10, 600, 400);
+		c48 = new TCanvas("c48", "c48", 200, 10, 900, 600);
 		c48->GetFrame()->SetFillColor(21);
 		c48->GetFrame()->SetBorderSize(12);
-		c48->Divide(2, 1);
+		c48->Divide(2, 2);
 	}
 
 	virtual void StartIdleing()
@@ -97,4 +97,5 @@ private:
 void PrintPiMatrix(const PiMatrix& pis, int size);
 int UiPromptInteger(const std::string& prompt, int min, int max);
 char UiPromptChar(const std::string& prompt);
-void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n);
+void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiMatrix& relDiff, int m);
+void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m);

@@ -10,10 +10,11 @@ using namespace std;
 void MonteCarloPiCalculator::Calculate(int count)
 {
 	n = count;
+	int m = 100;
 	CalculateMonteCarloPi();
 	CalculateAverages();
 	CalculateStdDevs();
-
+	CalculateRelativeDiff();
 	Potencija();
 }
 
@@ -21,7 +22,7 @@ void MonteCarloPiCalculator::CalculateMonteCarloPi()
 {
 	assert((n >= 1) && (n <= MaxIterations));
 
-	for (int k = 0; k < 100; k++) {
+	for (int k = 0; k < m; k++) {
 		for (int j = 0; j < n; j++) {
 			int BrTuKrug = 0;
 			for (int i = 0; i < pow(10, j); i++)
@@ -36,16 +37,27 @@ void MonteCarloPiCalculator::CalculateMonteCarloPi()
 		}
 	}
 }
+void MonteCarloPiCalculator::CalculateRelativeDiff()
+{
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+			{
+				relDiff[i][j] = (BrPi[i][j] - aprox_PI) / (double)aprox_PI;
+			}
+	}
+}
+
 
 void MonteCarloPiCalculator::CalculateAverages()
 {
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 100; j++)
+		for (int j = 0; j < m; j++)
 		{
 			srVrij[i] += BrPi[j][i];
 		}
-		srVrij[i] = srVrij[i] / ((double)100.0 );
+		srVrij[i] = srVrij[i] / ((double)m );
 	}
 }
 
@@ -57,11 +69,11 @@ void MonteCarloPiCalculator::CalculateStdDevs()
 
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < 100; j++)
+		for (int j = 0; j < m; j++)
 		{
 			stDev[i] += pow(BrPi[j][i] - srVrij[i], 2);
 		}
-		stDev[i] = sqrt(stDev[i] / ((double)101.0));
+		stDev[i] = sqrt(stDev[i] / ((double)m+1));
 	}
 }
 
@@ -79,8 +91,8 @@ double MonteCarloPiCalculator::GetRandomNumber()
 	static std::random_device rd;
 	//static std::mt19937 rng{ rd() };
 	//static std::ranlux24 rng{ rd() };
-	static std::default_random_engine rng{ rd() };
-	//static std::knuth_b rng{ rd() };
+	//static std::default_random_engine rng{ rd() };
+	static std::knuth_b rng{ rd() };
 	//static std::ranlux48 rng{ rng() };
 	
 	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
