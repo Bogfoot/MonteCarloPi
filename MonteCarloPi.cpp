@@ -166,7 +166,7 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	if (odg == 'y')
 	{
 		cout << endl << "Skup pi-jeva dobijen pomocu Monte Carlo metode." << endl;
-		PrintPiMatrix(pis, n);
+		PrintPiMatrix(pis, n, m);
 
 		PrintRelDiffMatrix(relDiff, n, m);
 	}
@@ -225,9 +225,9 @@ void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m)
 	}
 }
 
-void PrintPiMatrix(const PiMatrix& pis, int n)
+void PrintPiMatrix(const PiMatrix& pis, int n, int m)
 {
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++)
 		{
