@@ -83,12 +83,28 @@ void MonteCarloPiCalculator::Potencija()
 		pot[i] = i;
 }
 
+void MonteCarloPiCalculator::VectPotencija()
+{
+	for (int i = 0; i < m; i++)
+	{
+		for(int j=0;j<n;j++)
+		{
+
+		VectPot[i][j] = j;
+
+		}
+	}
+}
+
 double MonteCarloPiCalculator::GetRandomNumber()
 {
 	constexpr double maxRandInt = numeric_limits<unsigned int>::max();
 
 	// 'static' ovdje znaci da se ova inicijalizacija izvrsava samo kod prvog poziva funkcije GetRandomNumber();
+	
 	static std::random_device rd;
+	
+	
 	//static std::mt19937 rng{ rd() };
 	//static std::ranlux24 rng{ rd() };
 	//static std::default_random_engine rng{ rd() };

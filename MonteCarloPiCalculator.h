@@ -4,7 +4,7 @@
 #include <vector>
 
 
-constexpr int MaxIterations = 101;
+constexpr int MaxIterations = 100;
 constexpr double aprox_PI = 3.141592653589793238463;
 
 using PiArray = std::array<double, MaxIterations>;
@@ -20,6 +20,7 @@ public:
 
 	PiMatrix BrPi;
 	PiVector relDiff;
+	PiVector VectPot;
 
 	PiArray srVrij;
 	PiArray stDev;
@@ -35,4 +36,5 @@ private:
 	void CalculateStdDevs();
 	double GetRandomNumber();
 	void Potencija();
+	void VectPotencija();
 };

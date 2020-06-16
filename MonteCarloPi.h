@@ -42,7 +42,7 @@ public:
 	MonteCarloApp(int argc, char* argv[]) : PiCalc{}, TApplication { "ROOT Application", & argc, argv }
 	{
 		// Inicijalizacija top-level kanvasa
-		c48 = new TCanvas("c48", "c48", 200, 10, 900, 600);
+		c48 = new TCanvas("c48", "c48", 200, 10, 900, 600); //   TCanvas(const char *name, const char *title, Int_t wtopx, Int_t wtopy,	Int_t ww, Int_t wh);
 		c48->GetFrame()->SetFillColor(21);
 		c48->GetFrame()->SetBorderSize(12);
 		c48->Divide(2, 2);
