@@ -93,34 +93,34 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	c48->Update();
 	
 	
-	//treći graf (2,1)
-	/*c48->cd(3);
-	auto* gr3 = new TGraph(brTocaka, calc.pot.data(), calc.relDiff.data());
-	gr3->SetTitle("Relativna razlika");
-	gr3->GetXaxis()->SetTitle("Potencija");
-	gr3->GetYaxis()->SetTitle("Relativna Razlika");
-	gr3->SetLineColor(2);
-	gr3->SetLineWidth(4);
-	gr3->SetMarkerColor(4);
-	gr3->SetMarkerSize(1.5);
-	gr3->SetMarkerStyle(21);
-	gPad->DrawFrame(0, 0, 4, 8);
-	gr3->Draw("ALP");
-	c48->Modified();
-	c48->Update();
+	////treći graf (2,1) Možda je bolje koristiti TGraph(const TVectorD &vx, const TVectorD &vy); za vektore
+	//c48->cd(3);
+	//auto* gr3 = new TGraph(calc.VectPot.data(), calc.relDiff.data());
+	//gr3->SetTitle("Relativna razlika");
+	//gr3->GetXaxis()->SetTitle("Potencija");
+	//gr3->GetYaxis()->SetTitle("Relativna Razlika");
+	//gr3->SetLineColor(2);
+	//gr3->SetLineWidth(4);
+	//gr3->SetMarkerColor(4);
+	//gr3->SetMarkerSize(1.5);
+	//gr3->SetMarkerStyle(21);
+	//gPad->DrawFrame(0, 0, 4, 8);
+	//gr3->Draw("ALP");
+	//c48->Modified();
+	//c48->Update();
 
 
-	//četvrti graf (2,2) Treba koristiti TGraph(const TVectorD &vx, const TVectorD &vy); za vektore
-	c48->cd(4);
-	auto* gr4 = new TGraph(calc.VectPot.data(), calc.relDiff.data());
-	gr4->SetTitle("Relativna razlika");
-	gr4->GetXaxis()->SetTitle("Potencija");
-	gr4->GetYaxis()->SetTitle("Relativna Razlika");
-	gPad->DrawFrame(0, 0, 4, 8);
-	gr4->Draw("AP");
-	c48->Modified();
-	c48->Update();
-	*/
+	//////četvrti graf (2,2) 
+	//c48->cd(4);
+	//auto* gr4 = new TGraph(calc.VectPot.data(), calc.relDiff.data());
+	//gr4->SetTitle("Relativna razlika");
+	//gr4->GetXaxis()->SetTitle("Potencija");
+	//gr4->GetYaxis()->SetTitle("Relativna Razlika");
+	//gPad->DrawFrame(0, 0, 4, 8);
+	//gr4->Draw("AP");
+	//c48->Modified();
+	//c48->Update();
+	//
 }
 
 
