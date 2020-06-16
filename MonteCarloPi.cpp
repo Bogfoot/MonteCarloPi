@@ -25,7 +25,7 @@ void MainLoop(void* arg)
 		app->PiCalc.Calculate(n);
 		cout << "Vrijeme: " << sw.ElapsedMilliseconds() << " ms" << endl;
 
-		ConsolePrintResults(app->PiCalc.BrPi, app->PiCalc.srVrij, app->PiCalc.stDev, app->PiCalc.n, app->PiCalc.relDiff, app->PiCalc.m);
+		ConsolePrintResults(app->PiCalc.BrPi, app->PiCalc.srVrij, app->PiCalc.stDev, app->PiCalc.n, app->PiCalc.relDiff, app->PiCalc.m, app->PiCalc.relDiffsrVrij, app->PiCalc.relDiffstDev);
 		app->Invalidate();
 
 		cout << endl;
@@ -64,18 +64,18 @@ int main(int argc, char* argv[], char* /*envp[]*/) //tu se javlja neki "zeleni" 
 
 void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 {
-	int brTocaka = calc.m * calc.n; //služi kao broj točaka 
+
 	//prvi graf (1,1)
 	c48->cd(1); 
 	auto* gr = new TGraphErrors(calc.n, calc.pot.data(), calc.srVrij.data(), nullptr, calc.stDev.data());//Moraju biti pointeri
 	gr->SetTitle("Graficki prikaz srednje vrijednosti po potenciji");
 	gr->GetXaxis()->SetTitle("Potencija");
 	gr->GetYaxis()->SetTitle("Srednja vrijednost");
-	gr->SetLineColor(2);
-	gr->SetLineWidth(4);
+	gr->SetLineColor(1);
+	gr->SetLineWidth(1);
 	gr->SetMarkerColor(4);
 	gr->SetMarkerSize(1.5);
-	gr->SetMarkerStyle(21);
+	gr->SetMarkerStyle(5);
 	gPad->DrawFrame(0, 0, 4, 8);
 	gr->Draw("ALP");
 	c48->Modified();
@@ -87,40 +87,42 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr2->SetTitle("Isto kao i prvi grafikon");
 	gr2->GetXaxis()->SetTitle("Potencija");
 	gr2->GetYaxis()->SetTitle("Srednja vrijednost");
+	gr2->SetMarkerStyle(5);
 	gPad->DrawFrame(0, 0, 4, 8);
-	gr2->Draw("AP");
+	gr2->Draw("ALP");
 	c48->Modified();
 	c48->Update();
 	
 	
 	////treći graf (2,1) Možda je bolje koristiti TGraph(const TVectorD &vx, const TVectorD &vy); za vektore
-	//c48->cd(3);
-	//auto* gr3 = new TGraph(calc.VectPot.data(), calc.relDiff.data());
-	//gr3->SetTitle("Relativna razlika");
-	//gr3->GetXaxis()->SetTitle("Potencija");
-	//gr3->GetYaxis()->SetTitle("Relativna Razlika");
-	//gr3->SetLineColor(2);
-	//gr3->SetLineWidth(4);
-	//gr3->SetMarkerColor(4);
-	//gr3->SetMarkerSize(1.5);
-	//gr3->SetMarkerStyle(21);
-	//gPad->DrawFrame(0, 0, 4, 8);
-	//gr3->Draw("ALP");
-	//c48->Modified();
-	//c48->Update();
+	c48->cd(3);
+	auto* gr3 = new TGraphErrors(calc.n, calc.pot.data(), calc.relDiffsrVrij.data(), nullptr, calc.relDiffstDev.data());
+	gr3->SetTitle("Srednja vrijednost apsolutnih razlika broja Pi");
+	gr3->GetXaxis()->SetTitle("Potencija");
+	gr3->GetYaxis()->SetTitle("Absolutna razlika");
+	gr3->SetLineColor(1);
+	gr3->SetLineWidth(1);
+	gr3->SetMarkerColor(4);
+	gr3->SetMarkerSize(1.5);
+	gr3->SetMarkerStyle(5);
+	gPad->DrawFrame(0, 0, 4, 8);
+	gr3->Draw("ALP");
+	c48->Modified();
+	c48->Update();
 
 
-	//////četvrti graf (2,2) 
-	//c48->cd(4);
-	//auto* gr4 = new TGraph(calc.VectPot.data(), calc.relDiff.data());
-	//gr4->SetTitle("Relativna razlika");
-	//gr4->GetXaxis()->SetTitle("Potencija");
-	//gr4->GetYaxis()->SetTitle("Relativna Razlika");
-	//gPad->DrawFrame(0, 0, 4, 8);
-	//gr4->Draw("AP");
-	//c48->Modified();
-	//c48->Update();
-	//
+	////četvrti graf (2,2) 
+	c48->cd(4);
+	auto* gr4 = new TGraphErrors(calc.n, calc.pot.data(), calc.relDiffsrVrij.data(), nullptr, calc.relDiffstDev.data());
+	gr4->SetTitle("Isto kao i prijašnji graf");
+	gr4->GetXaxis()->SetTitle("Potencija");
+	gr4->GetYaxis()->SetTitle("Absolutna razlika");
+	gr2->SetMarkerStyle(5);
+	gPad->DrawFrame(0, 0, 4, 8);
+	gr4->Draw("ALP");
+	c48->Modified();
+	c48->Update();
+	
 }
 
 
@@ -153,22 +155,24 @@ char UiPromptChar(const string& prompt)
 	return n;
 }
 
-void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiVector& relDiff, int m)
+void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiMatrix& relDiff, int m, const PiArray& relDiffsrVrij, const PiArray& relDiffstDev)
 {
 	cout << std::fixed;
-	cout << std::setprecision(5);
+	cout << std::setprecision(9);
 
 	cout << endl;
 
-	auto odg = UiPromptChar("Zelite li ispisati dobivene pi-jeve (y/n)?");
+	auto odg = UiPromptChar("Zelite li ispisati dobivene pi-jeve i relativne razlike? (y/n)");
 	if (odg == 'y')
 	{
 		cout << endl << "Skup pi-jeva dobijen pomocu Monte Carlo metode." << endl;
 		PrintPiMatrix(pis, n);
+
+		PrintRelDiffMatrix(relDiff, n, m);
 	}
 	cout << endl;
-	PrintRelDiffMatrix(relDiff, n, m);
-
+	
+	//Napravi funkciju ovoga ujutro
 
 	cout << endl << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
 	for (int i = 0; i < n; i++)
@@ -187,11 +191,28 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	{
 		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << avg[i] << " +- " << stDev[i] << endl;
 	}
+	//_____________________________
+	cout << endl << "Ovdje su absolutne srednje vrijednosti po identicnom eksperimentu." << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << relDiffsrVrij[i] << endl;
+	}
 
+	cout << endl << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << relDiffstDev[i] << endl;
+	}
+
+	cout << endl;
+	for (int i = 0; i < n; i++)
+	{
+		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << relDiffsrVrij[i] << " +- " << relDiffstDev[i] << endl;
+	}
 
 }
 
-void PrintRelDiffMatrix(const PiVector& relDiff, int n, int m)
+void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m)
 {
 	cout << "Relaativna razlika od aproksimacije broja pi: \n";
 	for (int i = 0; i < m; i++)

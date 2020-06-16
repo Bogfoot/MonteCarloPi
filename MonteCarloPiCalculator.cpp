@@ -15,6 +15,8 @@ void MonteCarloPiCalculator::Calculate(int count)
 	CalculateAverages();
 	CalculateStdDevs();
 	CalculateRelativeDiff();
+	CalculateAveragesrelDiff();
+	CalculateStdDevsrelDiff();
 	Potencija();
 }
 
@@ -43,7 +45,7 @@ void MonteCarloPiCalculator::CalculateRelativeDiff()
 	{
 		for (int j = 0; j < n; j++)
 			{
-				relDiff[i][j] = (BrPi[i][j] - aprox_PI) / (double)aprox_PI;
+				relDiff[i][j] = abs((BrPi[i][j] - aprox_PI) / (double)aprox_PI);
 			}
 	}
 }
@@ -58,6 +60,17 @@ void MonteCarloPiCalculator::CalculateAverages()
 			srVrij[i] += BrPi[j][i];
 		}
 		srVrij[i] = srVrij[i] / ((double)m );
+	}
+}
+void MonteCarloPiCalculator::CalculateAveragesrelDiff()
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			relDiffsrVrij[i] += relDiff[j][i];
+		}
+		relDiffsrVrij[i] = relDiffsrVrij[i] / ((double)m);
 	}
 }
 
@@ -76,6 +89,21 @@ void MonteCarloPiCalculator::CalculateStdDevs()
 		stDev[i] = sqrt(stDev[i] / ((double)m+1));
 	}
 }
+void MonteCarloPiCalculator::CalculateStdDevsrelDiff()
+{
+	/*
+		sqrt(suma(x_i - x_sr)^2/n)
+	*/
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			relDiffstDev[i] += pow(relDiff[j][i] - relDiffsrVrij[i], 2);
+		}
+		relDiffstDev[i] = sqrt(relDiffstDev[i] / ((double)m + 1));
+	}
+}
 
 void MonteCarloPiCalculator::Potencija()
 {
@@ -83,18 +111,7 @@ void MonteCarloPiCalculator::Potencija()
 		pot[i] = i;
 }
 
-void MonteCarloPiCalculator::VectPotencija()
-{
-	for (int i = 0; i < m; i++)
-	{
-		for(int j=0;j<n;j++)
-		{
 
-		VectPot[i][j] = j;
-
-		}
-	}
-}
 
 double MonteCarloPiCalculator::GetRandomNumber()
 {
