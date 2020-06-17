@@ -3,6 +3,8 @@
 #include <random>
 #include <math.h>
 #include <iomanip>
+#include <fstream>
+#include <string>
 
 #include "MonteCarloPi.h"
 
@@ -89,7 +91,7 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr2->GetYaxis()->SetTitle("Srednja vrijednost");
 	gr2->SetMarkerStyle(5);
 	gPad->DrawFrame(0, 0, 4, 8);
-	gr2->Draw("ALP");
+	gr2->Draw("AP");
 	c48->Modified();
 	c48->Update();
 	
@@ -114,12 +116,13 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	////četvrti graf (2,2) 
 	c48->cd(4);
 	auto* gr4 = new TGraphErrors(calc.n, calc.pot.data(), calc.relDiffsrVrij.data(), nullptr, calc.relDiffstDev.data());
-	gr4->SetTitle("Isto kao i prijašnji graf");
+	gr4->SetTitle("Isto kao i prijasnji graf");
 	gr4->GetXaxis()->SetTitle("Potencija");
 	gr4->GetYaxis()->SetTitle("Absolutna razlika");
-	gr2->SetMarkerStyle(5);
+	gr4->SetMarkerStyle(5);
+	gr4->SetMarkerSize(1.5);
 	gPad->DrawFrame(0, 0, 4, 8);
-	gr4->Draw("ALP");
+	gr4->Draw("AP");
 	c48->Modified();
 	c48->Update();
 	
@@ -165,64 +168,46 @@ void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray&
 	auto odg = UiPromptChar("Zelite li ispisati dobivene pi-jeve i relativne razlike? (y/n)");
 	if (odg == 'y')
 	{
-		cout << endl << "Skup pi-jeva dobijen pomocu Monte Carlo metode." << endl;
+		cout << endl << "Skup pi-jeva dobive pomocu Monte Carlo metode." << endl;
 		PrintPiMatrix(pis, n, m);
-
-		PrintRelDiffMatrix(relDiff, n, m);
+		cout << endl << "Skup relativnih razlika broja pi dobiveni pomocu Monte Carlo metode." << endl;
+		PrintPiMatrix(relDiff, n, m);
 	}
 	cout << endl;
 	
-	//Napravi funkciju ovoga ujutro
+	cout << endl << "Ovdje su srednje vrijednosti i standardne devijacije po identicnom eksperimentu." << endl;
+	PrintAllResults(avg, stDev, n);
 
-	cout << endl << "Ovdje su srednje vrijednosti po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << avg[i] << endl;
-	}
+	cout << endl << "Ovdje su absolutne srednje vrijednosti i standardne devijacije po identicnom eksperimentu." << endl;
+	PrintAllResults(relDiffsrVrij, relDiffstDev, n);
 
-	cout << endl << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
+	//spremanje rezultata
+	SaveResults(avg, stDev, n, relDiffsrVrij, relDiffstDev); //radim ovo tu jer mi je najjednostavnije ovako
+	
+}
+void SaveResults(const PiArray& avg, const PiArray& stDev, int n , const PiArray& relavg, const PiArray& relstDev)
+{
+	ofstream outdata;
+	outdata.open("data.txt");
+	outdata << "Potencija \t Srednja vrijednost pi-jeva \t Standardna devijacija srednjih vrijednosti pi-jeva \t Absolutno odstupanje \t Standardna devijacija absolutnog odstupanja \n";
+	for (int i = 0; i < n; ++i)
 	{
-		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << stDev[i] << endl;
+		outdata <<i <<",	"<< avg[i]<<",		" << stDev[i] << ",		" << relavg[i] << ",		" << relstDev[i] << endl;
 	}
+	outdata.close();
+}
+
+
+
+void PrintAllResults(const PiArray& avg, const PiArray& stDev, int n)
+{
 
 	cout << endl;
 	for (int i = 0; i < n; i++)
 	{
 		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << avg[i] << " +- " << stDev[i] << endl;
 	}
-	//_____________________________
-	cout << endl << "Ovdje su absolutne srednje vrijednosti po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Srednja vrijednost za " << i + 1 << "-ti eksperiment je: " << relDiffsrVrij[i] << endl;
-	}
-
-	cout << endl << "Ovdje su standardne devijacije po identicnom eksperimentu." << endl;
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Standardne devijacije " << i + 1 << "-tog eksperimenta: " << relDiffstDev[i] << endl;
-	}
-
-	cout << endl;
-	for (int i = 0; i < n; i++)
-	{
-		cout << "Srednja vrijednost i standardna devijacija " << i + 1 << "-tog eksperimenta: " << relDiffsrVrij[i] << " +- " << relDiffstDev[i] << endl;
-	}
-
-}
-
-void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m)
-{
-	cout << "Relaativna razlika od aproksimacije broja pi: \n";
-	for (int i = 0; i < m; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			cout << "(" << i + 1 << "," << j + 1 << ")" << "-tog eksperimenta: " << relDiff[i][j];
-		}
-		cout <<endl <<endl;
-	}
+	
 }
 
 void PrintPiMatrix(const PiMatrix& pis, int n, int m)

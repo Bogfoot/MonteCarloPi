@@ -1,0 +1,8 @@
+Potencija 	 Srednja vrijednost pi-jeva 	 Standardna devijacija srednjih vrijednosti pi-jeva 	 Absolutno odstupanje 	 Standardna devijacija absolutnog odstupanja 
+0,	3.12,		1.64876,		0.433127,		0.299564
+1,	3.14,		0.552582,		0.134175,		0.114515
+2,	3.1356,		0.174845,		0.0441409,		0.0342339
+3,	3.13704,		0.0502938,		0.0131702,		0.00930749
+4,	3.14151,		0.0176518,		0.00467265,		0.00315492
+5,	3.14218,		0.00499402,		0.00130454,		0.000936073
+6,	3.14144,		0.00152766,		0.000387183,		0.000300678

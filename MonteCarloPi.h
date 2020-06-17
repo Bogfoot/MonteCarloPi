@@ -100,4 +100,5 @@ void PrintPiMatrix(const PiMatrix& pis, int size, int m);
 int UiPromptInteger(const std::string& prompt, int min, int max);
 char UiPromptChar(const std::string& prompt);
 void ConsolePrintResults(const PiMatrix& pis, const PiArray& avg, const PiArray& stDev, int n, const PiMatrix& relDiff, int m, const PiArray& relDiffsrVrij, const PiArray& relDiffstDev);
-void PrintRelDiffMatrix(const PiMatrix& relDiff, int n, int m);
+void PrintAllResults(const PiArray& avg, const PiArray& stDev, int n);
+void SaveResults(const PiArray& avg, const PiArray& stDev, int n, const PiArray& relavg, const PiArray& relstDev);
