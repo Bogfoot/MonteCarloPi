@@ -4,7 +4,6 @@
 #include <math.h>
 #include <iomanip>
 #include <fstream>
-#include <string>
 
 #include "MonteCarloPi.h"
 
@@ -73,6 +72,7 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr->SetTitle("Graficki prikaz srednje vrijednosti po potenciji");
 	gr->GetXaxis()->SetTitle("Potencija");
 	gr->GetYaxis()->SetTitle("Srednja vrijednost");
+	gr->GetXaxis()->SetRangeUser(-0.5, 7.);
 	gr->SetLineColor(1);
 	gr->SetLineWidth(1);
 	gr->SetMarkerColor(4);
@@ -89,6 +89,7 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr2->SetTitle("Isto kao i prvi grafikon");
 	gr2->GetXaxis()->SetTitle("Potencija");
 	gr2->GetYaxis()->SetTitle("Srednja vrijednost");
+	gr2->GetXaxis()->SetRangeUser(-0.5, 7.);
 	gr2->SetMarkerStyle(5);
 	gPad->DrawFrame(0, 0, 4, 8);
 	gr2->Draw("AP");
@@ -102,6 +103,7 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr3->SetTitle("Srednja vrijednost apsolutnih razlika broja Pi");
 	gr3->GetXaxis()->SetTitle("Potencija");
 	gr3->GetYaxis()->SetTitle("Absolutna razlika");
+	gr3->GetXaxis()->SetRangeUser(-0.5, 7.);
 	gr3->SetLineColor(1);
 	gr3->SetLineWidth(1);
 	gr3->SetMarkerColor(4);
@@ -119,6 +121,7 @@ void MonteCarloApp::UpdateCanvas(const MonteCarloPiCalculator& calc)
 	gr4->SetTitle("Isto kao i prijasnji graf");
 	gr4->GetXaxis()->SetTitle("Potencija");
 	gr4->GetYaxis()->SetTitle("Absolutna razlika");
+	gr4->GetXaxis()->SetRangeUser(-0.5, 7.);
 	gr4->SetMarkerStyle(5);
 	gr4->SetMarkerSize(1.5);
 	gPad->DrawFrame(0, 0, 4, 8);

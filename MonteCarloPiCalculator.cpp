@@ -121,11 +121,11 @@ double MonteCarloPiCalculator::GetRandomNumber()
 	
 	static std::random_device rd;
 	
-	//static std::knuth_b rng{ rd() }; //1; 31s
-	//static std::ranlux24 rng{ rd() };//2; 30s
-	//static std::mt19937 rng{ rd() }; //3  najbrži; 8s
-	//static std::default_random_engine rng{ rd() };//4 isto jako brz; 9s
-	static std::ranlux48 rng{ rng() }; //5 Najsporiji; 150s
+	//static std::knuth_b rng{ rd() }; //1; 29,8s
+	//static std::ranlux24 rng{ rd() };//2; 32,501s
+	static std::mt19937 rng{ rd() }; //3  najbrži; 8.4s
+	//static std::default_random_engine rng{ rd() };//4 isto jako brz; 8.7s
+	//static std::ranlux48 rng{ rng() }; //5 Najsporiji; 154,1s
 	
 	static uniform_int_distribution<unsigned int> distribution(0, (unsigned int)maxRandInt - 1);
 
